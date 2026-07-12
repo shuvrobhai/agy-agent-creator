@@ -2,35 +2,43 @@
 
 > **Last reviewed:** 2026-07-12
 
-An [Antigravity](https://github.com/google/antigravity) skill designed to help AI agents and users interactively create, register, and verify custom subagents or profiles. It enforces the strictly validated **v1.0.16+ YAML schema** for `agent.md` configs, preventing silent registration failures.
+An [Antigravity](https://github.com/google/antigravity) skill that creates, registers, and verifies custom **agents** and **subagents**. It enforces the **v1.0.16+ YAML schema** for `agent.md` configs, so agents register correctly on the first try.
+
+---
+
+## Why This Exists
+
+After an Antigravity CLI update, I asked the AI to create a custom agent. It generated a config, but `agy agent` never listed the new agent. The AI kept hallucinating fixes — different file paths, renamed fields, restructured YAML — none of which worked. I'm not a developer, so diagnosing the schema myself took hours of trial and error.
+
+Once I found the exact v1.0.16+ requirements, I built this skill so no one else has to repeat that process.
 
 ---
 
 ## What's Here
 
-| File/Dir | Purpose |
-|----------|---------|
-| `SKILL.md` | The core instruction file providing the agent creation protocol. |
-| [`references/valid-agent.md`](references/valid-agent.md) | Example of a valid configuration adhering to the v1.0.16+ schema. |
-| [`references/legacy-agent.md`](references/legacy-agent.md) | Example of a legacy configuration showing deprecated patterns. |
+| File/Dir                                                   | Purpose                                    |
+| ---------------------------------------------------------- | ------------------------------------------ |
+| `SKILL.md`                                                 | Agent creation instructions.               |
+| [`references/valid-agent.md`](references/valid-agent.md)   | Valid v1.0.16+ config example.             |
+| [`references/legacy-agent.md`](references/legacy-agent.md) | Deprecated config example (what to avoid). |
 
 ---
 
 ## Features
 
-- **Interactive Setup:** Prompts the user step-by-step for the agent name, scope, description, and tools list.
-- **Strict Schema Enforcement:** Generates `agent.md` with the mandatory `system_prompt_config` section and individually listed tools.
-- **Auto-verification:** Instructs the creating agent to verify successful registration with the `agy` CLI post-generation.
+- **Guided setup:** Prompts for agent name, scope, description, and tools.
+- **Schema enforcement:** Generates `agent.md` with the required `system_prompt_config` section and individually listed tools.
+- **Verification:** Runs `agy agent` after generation to confirm the agent registered.
 
 ---
 
 ## Installation
 
-You can install this skill globally (for all projects) or workspace-locally (for a specific project).
+Install globally (all projects) or locally (one project).
 
-### Global Installation
+### Global
 
-To make the custom agent creator skill available globally across all of your workspaces, copy it into your global Gemini config directory:
+Copy into your global Gemini config directory:
 
 ```bash
 # Create target directory
@@ -41,9 +49,9 @@ cp SKILL.md ~/.gemini/config/skills/agy-agent-creator/
 cp -R references ~/.gemini/config/skills/agy-agent-creator/
 ```
 
-### Workspace Installation
+### Workspace
 
-To restrict the skill to a specific workspace, copy it into the project's local `.agents` folder:
+Copy into the project's `.agents` folder:
 
 ```bash
 # Create target directory
@@ -58,11 +66,11 @@ cp -R references .agents/skills/agy-agent-creator/
 
 ## How It Works
 
-Once installed, this skill is triggered whenever you mention "creating an agent", "defining an agent profile", or "setting up custom subagents". The agent will then:
+Triggers when you mention "creating an agent," "defining an agent profile," or "setting up custom subagents." The agent then:
 
-1. **Collect Metadata Interactively:** Ask for the name, scope, description, and tools required using choice menus when possible.
-2. **Generate the Config File:** Create the target folder and write `agent.md` with the strictly validated schema structure.
-3. **Verify:** Check if the agent registers correctly with the `agy` CLI and report back.
+1. **Collects metadata:** Asks for name, scope, description, and tools via choice menus.
+2. **Generates the config:** Creates the target folder and writes `agent.md`.
+3. **Verifies:** Runs `agy agent` to confirm registration.
 
 ### The Target v1.0.16+ Schema
 
@@ -103,4 +111,4 @@ System prompt directives and instructions for the agent go here...
 
 ## License
 
-This project is licensed under the MIT License.
+MIT License.
